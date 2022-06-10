@@ -14,6 +14,8 @@ class TodoTask {
 
 
 struct HomeView: View {
+    @State var showSheet : Bool = false
+    
     var body : some View {
         NavigationView {
             List {
@@ -21,17 +23,29 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .toolbar {
-                NavigationLink {
-                    AddView()
-                } label : {
-                    Image(systemName: "plus")
+                ToolbarItemGroup(placement: .navigationBarTrailing){
+                    Button {
+                        showSheet.toggle()
+                    } label : {
+                        Text("Sort")
+                    }
+                    
+                    NavigationLink {
+                        AddView()
+                    } label : {
+                        Image(systemName: "plus")
+                    }
                 }
             }
+            .sheet(isPresented: $showSheet, content: {
+                Text("Select Sort method")
+            })
         }
     }
 }
 
 struct ContentView: View {
+    @State var tasks : [TodoTask] = []
     var body: some View {
         TabView {
             HomeView()
