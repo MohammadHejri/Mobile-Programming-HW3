@@ -8,13 +8,25 @@
 import SwiftUI
 
 struct AddView: View {
+    
+    @Binding var tasks: [TodoTask]
+    
+    @State var name = ""
+    @State var description = ""
+    @State var date = Date()
+    
     var body: some View {
-        Text("Add Todo")
-    }
-}
-
-struct AddView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddView()
+        Form {
+            TextField("Task Name", text: $name)
+            TextField("Task Description", text: $description)
+            DatePicker("Due Date", selection: $date)
+        }.navigationTitle("Add a Task")
+            .toolbar {
+                Button {
+                    
+                } label : {
+                    Text("Add")
+                }
+            }
     }
 }

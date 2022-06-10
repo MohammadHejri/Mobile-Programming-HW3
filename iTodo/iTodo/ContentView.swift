@@ -15,6 +15,7 @@ class TodoTask {
 
 struct HomeView: View {
     @State var showSheet : Bool = false
+    @Binding var tasks : [TodoTask]
     
     var body : some View {
         NavigationView {
@@ -31,7 +32,7 @@ struct HomeView: View {
                     }
                     
                     NavigationLink {
-                        AddView()
+                        AddView(tasks : $tasks)
                     } label : {
                         Image(systemName: "plus")
                     }
@@ -48,7 +49,7 @@ struct ContentView: View {
     @State var tasks : [TodoTask] = []
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(tasks : $tasks)
                 .tabItem {
                     Image(systemName : "house")
                     Text("Home")
