@@ -22,7 +22,7 @@ struct HomeView: View {
             .navigationTitle("Home")
             .toolbar {
                 NavigationLink {
-                    
+                    AddView()
                 } label : {
                     Image(systemName: "plus")
                 }
@@ -39,10 +39,10 @@ struct ContentView: View {
                     Image(systemName : "house")
                     Text("Home")
                 }
-            Text("add")
+            Text("Select Date")
                 .tabItem {
                     Image(systemName: "calendar")
-                    Text("second")
+                    Text("Date")
                 }
         }
     }

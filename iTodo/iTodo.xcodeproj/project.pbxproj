@@ -11,6 +11,7 @@
 		11286C7C285248AE00A9B22F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11286C7B285248AE00A9B22F /* ContentView.swift */; };
 		11286C7E285248B300A9B22F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11286C7D285248B300A9B22F /* Assets.xcassets */; };
 		11286C81285248B300A9B22F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11286C80285248B300A9B22F /* Preview Assets.xcassets */; };
+		5A2FBE21285358C5008EB38E /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A2FBE20285358C5008EB38E /* AddView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		11286C80285248B300A9B22F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		11286C86285248B300A9B22F /* iTodoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iTodoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		11286C90285248B300A9B22F /* iTodoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iTodoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A2FBE20285358C5008EB38E /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			children = (
 				11286C79285248AE00A9B22F /* iTodoApp.swift */,
 				11286C7B285248AE00A9B22F /* ContentView.swift */,
+				5A2FBE20285358C5008EB38E /* AddView.swift */,
 				11286C7D285248B300A9B22F /* Assets.xcassets */,
 				11286C7F285248B300A9B22F /* Preview Content */,
 			);
@@ -234,6 +237,7 @@
 			files = (
 				11286C7C285248AE00A9B22F /* ContentView.swift in Sources */,
 				11286C7A285248AE00A9B22F /* iTodoApp.swift in Sources */,
+				5A2FBE21285358C5008EB38E /* AddView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
