@@ -1,5 +1,17 @@
 import SwiftUI
 
+class TodoTask {
+    static var id = 0
+    var uniqueId : Int
+    var dueDate : Date
+    
+    init(_ dueDate : Date) {
+        self.uniqueId = TodoTask.id
+        self.dueDate = dueDate
+        TodoTask.id += 1
+    }
+}
+
 
 struct HomeView: View {
     var body : some View {
@@ -9,7 +21,7 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .toolbar {
-                Button {
+                NavigationLink {
                     
                 } label : {
                     Image(systemName: "plus")
