@@ -1,16 +1,38 @@
-//
-//  ContentView.swift
-//  iTodo
-//
-//  Created by Mohammad Hejri on 6/9/22.
-//
-
 import SwiftUI
+
+
+struct HomeView: View {
+    var body : some View {
+        NavigationView {
+            List {
+                
+            }
+            .navigationTitle("Home")
+            .toolbar {
+                Button {
+                    
+                } label : {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+    }
+}
 
 struct ContentView: View {
     var body: some View {
-        Text("Kiram to mamad hejri!")
-            .padding()
+        TabView {
+            HomeView()
+                .tabItem {
+                    Image(systemName : "house")
+                    Text("Home")
+                }
+            Text("add")
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("second")
+                }
+        }
     }
 }
 
