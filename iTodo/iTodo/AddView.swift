@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AddView: View {
     
+    @Environment(\.presentationMode) var mode
+    
     @Binding var tasks: [TodoTask]
     
     @State var name = ""
@@ -23,7 +25,8 @@ struct AddView: View {
         }.navigationTitle("Add a Task")
             .toolbar {
                 Button {
-                    
+                    tasks.append(TodoTask(dueDate : date, name: name, description: description))
+                    mode.wrappedValue.dismiss()
                 } label : {
                     Text("Add")
                 }
