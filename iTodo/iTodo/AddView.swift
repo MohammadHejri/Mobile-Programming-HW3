@@ -16,12 +16,13 @@ struct AddView: View {
     @State var name = ""
     @State var description = ""
     @State var date = Date()
+
     
     var body: some View {
         Form {
             TextField("Task Name", text: $name)
             TextField("Task Description", text: $description)
-            DatePicker("Due Date", selection: $date)
+            DatePicker("Due Date", selection: $date, in : Date()...)
         }.navigationTitle("Add a Task")
             .toolbar {
                 Button {

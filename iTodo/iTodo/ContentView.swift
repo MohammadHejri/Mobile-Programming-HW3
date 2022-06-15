@@ -106,7 +106,10 @@ struct DateView : View {
     
     var body: some View {
         VStack {
-            DatePicker("Due Date", selection: $date)
+            DatePicker("Due Date",
+                       selection: $date,
+                       in : Date()...,
+                       displayedComponents: [.date])
                 .padding()
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
