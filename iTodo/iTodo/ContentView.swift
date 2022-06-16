@@ -4,19 +4,29 @@ class TodoTask {
     static var id = 0
     var uniqueId : Int
     var dueDate : Date
+    var creationDate : Date
     var name : String
-    var description : String
     
-    init(dueDate : Date,name : String, description : String) {
+    init(dueDate : Date,name : String) {
         self.uniqueId = TodoTask.id
         self.dueDate = dueDate
+        self.creationDate = Date()
         self.name = name
-        self.description = description
         TodoTask.id += 1
     }
 }
 
-
+struct GrowingButton: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding()
+            .background(.blue)
+            .foregroundColor(.white)
+            .clipShape(Capsule())
+            .scaleEffect(configuration.isPressed ? 1.2 : 1)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
 struct HomeView: View {
     @State var showSheet : Bool = false
     @Binding var tasks : [TodoTask]
@@ -33,7 +43,8 @@ struct HomeView: View {
                 ForEach(tasks, id : \.uniqueId) {item in
                     VStack(alignment : .leading) {
                         Text("Task Name: \(item.name)")
-                        Text("Task decription: \(item.description)")
+                        Text("Created at : \(item.creationDate)")
+                        Text("Due date : \(item.dueDate)")
                     }
                 }
                 .onDelete(perform : deleteItems)
@@ -54,32 +65,27 @@ struct HomeView: View {
                     }
                 }
             }
+            //todo(implement ascending and descending
             .sheet(isPresented: $showSheet, content: {
                 VStack(spacing: 10) {
-                    Button {
+                    Button("Sort by name") {
                         tasks.sort(by : {$0.name < $1.name})
-                    } label: {
-                        Text("Sort by name")
-                    }
+                    }.buttonStyle(GrowingButton())
                     
-                    Button {
-                        tasks.sort(by : {$0.description < $1.description})
-                    } label : {
-                        Text("Sort by description")
-                    }
+                    Button("Sort by creation date") {
+                        tasks.sort(by : {$0.creationDate < $1.creationDate})
+                    }.buttonStyle(GrowingButton())
                     
-                    Button {
+                    Button("Sort by due date") {
                         tasks.sort(by : {$0.dueDate < $1.dueDate})
-                    } label : {
-                        Text("Sort by date")
-                    }
+                    }.buttonStyle(GrowingButton())
                 }
             })
         }
     }
 }
 
-
+// todo. Timezone bug
 struct DateView : View {
     @Binding var tasks : [TodoTask]
     @State var date : Date = Date()
@@ -98,10 +104,8 @@ struct DateView : View {
     }
     
     func getMatchingTasks() -> [TodoTask] {
-        return tasks.filter({isSameDay(date1 : $0.dueDate, date2 : date)})
+        return tasks.filter{isSameDay(date1 : $0.dueDate, date2 : date)}
     }
-    
-    
     
     
     var body: some View {
@@ -111,11 +115,13 @@ struct DateView : View {
                        in : Date()...,
                        displayedComponents: [.date])
                 .padding()
+            Text("an \(date)")
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
                     VStack(alignment : .leading) {
                         Text("Task Name: \(item.name)")
-                        Text("Task decription: \(item.description)")
+                        Text("Created at : \(item.creationDate)")
+                        Text("Due date : \(item.dueDate)")
                     }
                 }
                 .onDelete(perform : deleteItems)

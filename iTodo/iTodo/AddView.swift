@@ -14,20 +14,26 @@ struct AddView: View {
     @Binding var tasks: [TodoTask]
     
     @State var name = ""
-    @State var description = ""
     @State var date = Date()
+    @State var isEmptyNameAlertPresented = false
 
     
     var body: some View {
         Form {
             TextField("Task Name", text: $name)
-            TextField("Task Description", text: $description)
             DatePicker("Due Date", selection: $date, in : Date()...)
-        }.navigationTitle("Add a Task")
+        }.alert("The name of your task cannot be empty.", isPresented: $isEmptyNameAlertPresented){
+            Button("Cancel", role : .cancel) {}
+        }
+        .navigationTitle("Add a Task")
             .toolbar {
                 Button {
-                    tasks.append(TodoTask(dueDate : date, name: name, description: description))
+                    if name.isEmpty {
+                        isEmptyNameAlertPresented = true
+                    } else {
+                    tasks.append(TodoTask(dueDate : date, name: name))
                     mode.wrappedValue.dismiss()
+                    }
                 } label : {
                     Text("Add")
                 }
