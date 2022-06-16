@@ -70,13 +70,33 @@ struct HomeView: View {
     }
 }
 
+struct CheckToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            Label {
+                configuration.label
+            } icon: {
+                Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(configuration.isOn ? .accentColor : .secondary)
+                    .accessibility(label: Text(configuration.isOn ? "Checked" : "Unchecked"))
+                    .imageScale(.large)
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
 struct SheetView : View {
     @Binding var tasks : [TodoTask]
     @State private var isDescending : Bool = false
     
     var body : some View {
         VStack(alignment : .center,spacing: 10) {
-            Toggle(isOn : $isDescending) {}
+            Toggle("Sort in Descending Order",isOn : $isDescending)
+            .toggleStyle(CheckToggleStyle())
+            .padding()
             Button("Sort by name") {
                 if isDescending {
                     tasks.sort(by : {$0.name > $1.name})
