@@ -31,14 +31,10 @@ struct HomeView: View {
     @State var showSheet : Bool = false
     @Binding var tasks : [TodoTask]
     
-    func deleteItems(st offsets : IndexSet) {
-        tasks.remove(atOffsets: offsets)
-    }
-    
     var body : some View {
         NavigationView {
             List {
-                Text("Todo")
+                Text("Todos")
                     .fontWeight(.bold)
                 ForEach(tasks, id : \.uniqueId) {item in
                     VStack(alignment : .leading) {
@@ -47,7 +43,9 @@ struct HomeView: View {
                         Text("Due date : \(item.dueDate)")
                     }
                 }
-                .onDelete(perform : deleteItems)
+                .onDelete { offsets in
+                    tasks.remove(atOffsets : offsets)
+                }
             }
             .navigationTitle("Home")
             .toolbar {
@@ -65,34 +63,56 @@ struct HomeView: View {
                     }
                 }
             }
-            //todo(implement ascending and descending
             .sheet(isPresented: $showSheet, content: {
-                VStack(spacing: 10) {
-                    Button("Sort by name") {
-                        tasks.sort(by : {$0.name < $1.name})
-                    }.buttonStyle(GrowingButton())
-                    
-                    Button("Sort by creation date") {
-                        tasks.sort(by : {$0.creationDate < $1.creationDate})
-                    }.buttonStyle(GrowingButton())
-                    
-                    Button("Sort by due date") {
-                        tasks.sort(by : {$0.dueDate < $1.dueDate})
-                    }.buttonStyle(GrowingButton())
-                }
+                SheetView(tasks : $tasks)
             })
         }
     }
 }
 
-// todo. Timezone bug
+struct SheetView : View {
+    @Binding var tasks : [TodoTask]
+    @State private var isDescending : Bool = false
+    
+    var body : some View {
+        VStack(alignment : .center,spacing: 10) {
+            Toggle(isOn : $isDescending) {}
+            Button("Sort by name") {
+                if isDescending {
+                    tasks.sort(by : {$0.name > $1.name})
+                }
+                else {
+                    tasks.sort(by : {$0.name < $1.name})
+                }
+            }.buttonStyle(GrowingButton())
+            
+            Button("Sort by creation date") {
+                if isDescending {
+                    tasks.sort(by : {$0.creationDate > $1.creationDate})
+                }
+                else {
+                    tasks.sort(by : {$0.creationDate < $1.creationDate})
+                }
+            }.buttonStyle(GrowingButton())
+            
+            Button("Sort by due date") {
+                if isDescending {
+                    tasks.sort(by : {$0.dueDate > $1.dueDate})
+                }
+                else {
+                    tasks.sort(by : {$0.dueDate < $1.dueDate})
+                }
+
+            }.buttonStyle(GrowingButton())
+        }
+        
+    }
+}
+
 struct DateView : View {
     @Binding var tasks : [TodoTask]
     @State var date : Date = Date()
     
-    func deleteItems(st offsets : IndexSet) {
-        tasks.remove(atOffsets: offsets)
-    }
     
     func isSameDay(date1 : Date, date2 : Date) -> Bool {
         let diff = Calendar.current.dateComponents([.day],from : date1, to : date2)
@@ -104,7 +124,8 @@ struct DateView : View {
     }
     
     func getMatchingTasks() -> [TodoTask] {
-        return tasks.filter{isSameDay(date1 : $0.dueDate, date2 : date)}
+        let sameDayTasks = tasks.filter{isSameDay(date1 : $0.dueDate, date2 : date)}
+        return sameDayTasks.sorted(by : {$0.dueDate > $1.dueDate})
     }
     
     
@@ -115,7 +136,6 @@ struct DateView : View {
                        in : Date()...,
                        displayedComponents: [.date])
                 .padding()
-            Text("an \(date)")
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
                     VStack(alignment : .leading) {
@@ -124,7 +144,9 @@ struct DateView : View {
                         Text("Due date : \(item.dueDate)")
                     }
                 }
-                .onDelete(perform : deleteItems)
+                .onDelete { offsets in
+                    tasks.remove(atOffsets : offsets)
+                }
             }
         }
     }

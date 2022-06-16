@@ -22,7 +22,7 @@ struct AddView: View {
         Form {
             TextField("Task Name", text: $name)
             DatePicker("Due Date", selection: $date, in : Date()...)
-        }.alert("The name of your task cannot be empty.", isPresented: $isEmptyNameAlertPresented){
+        }.alert("The name of your Todo cannot be empty.", isPresented: $isEmptyNameAlertPresented){
             Button("Cancel", role : .cancel) {}
         }
         .navigationTitle("Add a Task")
