@@ -144,8 +144,8 @@ struct DateView : View {
     }
     
     func getMatchingTasks() -> [TodoTask] {
-        let sameDayTasks = tasks.filter{isSameDay(date1 : $0.dueDate, date2 : date)}
-        return sameDayTasks.sorted(by : {$0.dueDate > $1.dueDate})
+        let sameDayTasks = tasks.filter{Calendar.current.isDate($0.dueDate, inSameDayAs: date)}
+        return sameDayTasks.sorted(by : {$0.dueDate < $1.dueDate})
     }
     
     
