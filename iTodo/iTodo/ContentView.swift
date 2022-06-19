@@ -7,7 +7,7 @@ class TodoTask {
     var creationDate : Date
     var name : String
     
-    init(dueDate : Date,name : String) {
+    init(dueDate : Date, name : String) {
         self.uniqueId = TodoTask.id
         self.dueDate = dueDate
         self.creationDate = Date()
@@ -40,7 +40,7 @@ struct HomeView: View {
                     VStack(alignment : .leading) {
                         Text("Task Name: \(item.name)")
                         Text("Created at : \(item.creationDate)")
-                        Text("Due date : \(item.dueDate)")
+                        Text("Due date : \(item		.dueDate)")
                     }
                 }
                 .onDelete { offsets in
