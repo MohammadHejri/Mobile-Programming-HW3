@@ -119,18 +119,26 @@ struct HomeView: View {
     
     var body : some View {
         NavigationView {
-            List {
-                Text("Todos")
-                    .fontWeight(.bold)
+            let empty_view = VStack(alignment: .center) {
+                Image(systemName: "exclamationmark.square")
+                    .resizable()
+                    .frame(width: 75.0, height: 75.0)
+                    .padding()
+                    .foregroundColor(.gray)
+                Text("No TODO to show")
+                    .font(.title)
+                    .foregroundColor(.gray)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
+            }
+            let list_view = List {
                 ForEach(tasks, id : \.uniqueId) {item in
                     TaskView(task: item).getView()
-
                 }
                 .onDelete { offsets in
                     tasks.remove(atOffsets : offsets)
                 }
-
             }
+            list_view
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing){
@@ -242,11 +250,7 @@ struct DateView : View {
                 .padding()
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
-                    VStack(alignment : .leading) {
-                        Text("Task Name: \(item.name)")
-                        Text("Created at : \(item.creationDate)")
-                        Text("Due date : \(item.dueDate)")
-                    }
+                    TaskView(task: item).getView()
                 }
                 .onDelete { offsets in
                     tasks.remove(atOffsets : offsets)
