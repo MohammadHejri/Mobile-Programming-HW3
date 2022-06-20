@@ -73,13 +73,12 @@ struct TimerView: View {
 }
 
 
-class TaskView {
+struct TaskView : View {
     var task: TodoTask
-    @State var checked: Bool
+    @State var checked: Bool = false
     
     init(task: TodoTask) {
         self.task = task
-        self.checked = false
     }
     
     func date2string(date: Date) -> String {
@@ -88,12 +87,15 @@ class TaskView {
         return formatter.string(from: date)
     }
 
-    func getView() -> some View {
+    var body: some View {
         VStack(alignment : .leading) {
             HStack() {
                 Spacer()
                 TimerView(date: self.task.dueDate)
             }
+            Toggle("Hello", isOn : $checked)
+            .toggleStyle(CheckToggleStyle())
+            .padding()
             Text("Task Name: \(self.task.name)")
                 .font(.headline)
                 .padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
@@ -132,7 +134,7 @@ struct HomeView: View {
             }
             let list_view = List {
                 ForEach(tasks, id : \.uniqueId) {item in
-                    TaskView(task: item).getView()
+                    TaskView(task: item)
                 }
                 .onDelete { offsets in
                     tasks.remove(atOffsets : offsets)
@@ -250,7 +252,7 @@ struct DateView : View {
                 .padding()
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
-                    TaskView(task: item).getView()
+                    TaskView(task: item)
                 }
                 .onDelete { offsets in
                     tasks.remove(atOffsets : offsets)
