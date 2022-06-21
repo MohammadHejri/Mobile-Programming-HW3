@@ -2,13 +2,13 @@ import SwiftUI
 
 class TodoTask {
     static var id = 0
-    var uniqueId : Int
-    var dueDate : Date
-    var creationDate : Date
-    var name : String
-    var isDone : Bool
+    var uniqueId: Int
+    var dueDate: Date
+    var creationDate: Date
+    var name: String
+    var isDone: Bool
     
-    init(dueDate : Date, name : String) {
+    init(dueDate: Date, name: String) {
         self.uniqueId = TodoTask.id
         self.dueDate = dueDate
         self.creationDate = Date()
@@ -62,7 +62,7 @@ struct TimerView: View {
 }
 
 
-struct TaskView : View {
+struct TaskView: View {
     var task: TodoTask
     var checkMode: Bool = true
     @State var isChecked: Bool = false
@@ -79,7 +79,7 @@ struct TaskView : View {
     }
 
     var body: some View {
-        VStack(alignment : .leading) {
+        VStack(alignment: .leading) {
             if checkMode {
                 HStack() {
                     Spacer()
@@ -87,7 +87,7 @@ struct TaskView : View {
                 }
             }
             if checkMode {
-                Toggle("\(self.task.name)", isOn : $isChecked)
+                Toggle("\(self.task.name)", isOn: $isChecked)
                     .toggleStyle(CheckToggleStyle())
                     .font(.headline)
                     .padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
@@ -105,6 +105,7 @@ struct TaskView : View {
                     .foregroundColor(Color(UIColor.systemBlue))
                 Text(date2string(date: self.task.dueDate))
             }
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 1, trailing: 0))
             HStack() {
                 Image(systemName: "calendar.badge.plus")
                     .foregroundColor(Color(UIColor.systemBlue))
@@ -117,15 +118,15 @@ struct TaskView : View {
 
 
 struct HomeView: View {
-    @State var showSheet : Bool = false
-    @Binding var tasks : [TodoTask]
+    @State var showSheet: Bool = false
+    @Binding var tasks: [TodoTask]
     @State var showAlert = false
     @State var indexSetToDelete: IndexSet?
     
-    var body : some View {
+    var body: some View {
         NavigationView {
             List {
-                ForEach(tasks, id : \.uniqueId) {item in
+                ForEach(tasks, id: \.uniqueId) {item in
                     TaskView(task: item, checkMode: true)
                 }
                 .onDelete { offsets in
@@ -136,7 +137,7 @@ struct HomeView: View {
                     Alert(title: Text("Confirm Deletion"),
                         message: Text("Are you sure you want to delete this TODO?"),
                         primaryButton: .destructive(Text("Delete")) {
-                        tasks.remove(atOffsets : self.indexSetToDelete!)
+                        tasks.remove(atOffsets: self.indexSetToDelete!)
                         },
                         secondaryButton: .cancel())
                 }
@@ -146,19 +147,19 @@ struct HomeView: View {
                 ToolbarItemGroup(placement: .navigationBarTrailing){
                     Button {
                         showSheet.toggle()
-                    } label : {
+                    } label: {
                         Text("Sort")
                     }
                     
                     NavigationLink {
-                        AddView(tasks : $tasks)
-                    } label : {
+                        AddView(tasks: $tasks)
+                    } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
             .sheet(isPresented: $showSheet, content: {
-                SheetView(tasks : $tasks)
+                SheetView(tasks: $tasks)
             })
         }
     }
@@ -173,7 +174,7 @@ struct CheckToggleStyle: ToggleStyle {
                 configuration.label
             } icon: {
                 Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(configuration.isOn ? .accentColor : .secondary)
+                    .foregroundColor(configuration.isOn ? .accentColor: .secondary)
                     .accessibility(label: Text(configuration.isOn ? "Checked" : "Unchecked"))
                     .imageScale(.large)
             }
@@ -182,45 +183,45 @@ struct CheckToggleStyle: ToggleStyle {
     }
 }
 
-struct SheetView : View {
-    @Binding var tasks : [TodoTask]
-    @State private var isDescending : Bool = false
+struct SheetView: View {
+    @Binding var tasks: [TodoTask]
+    @State private var isDescending: Bool = false
     @Environment(\.presentationMode) var presentationMode
     
-    var body : some View {
-        VStack(alignment : .center, spacing: 10) {
+    var body: some View {
+        VStack(alignment: .center, spacing: 10) {
 
             Button("Sort by Name") {
                 if isDescending {
-                    tasks.sort(by : {$0.name > $1.name})
+                    tasks.sort(by: {$0.name > $1.name})
                 }
                 else {
-                    tasks.sort(by : {$0.name < $1.name})
+                    tasks.sort(by: {$0.name < $1.name})
                 }
                 presentationMode.wrappedValue.dismiss()
             }.buttonStyle(GrowingButton())
             
             Button("Sort by Due Date") {
                 if isDescending {
-                    tasks.sort(by : {$0.dueDate > $1.dueDate})
+                    tasks.sort(by: {$0.dueDate > $1.dueDate})
                 }
                 else {
-                    tasks.sort(by : {$0.dueDate < $1.dueDate})
+                    tasks.sort(by: {$0.dueDate < $1.dueDate})
                 }
                 presentationMode.wrappedValue.dismiss()
             }.buttonStyle(GrowingButton())
             
             Button("Sort by Creation Date") {
                 if isDescending {
-                    tasks.sort(by : {$0.creationDate > $1.creationDate})
+                    tasks.sort(by: {$0.creationDate > $1.creationDate})
                 }
                 else {
-                    tasks.sort(by : {$0.creationDate < $1.creationDate})
+                    tasks.sort(by: {$0.creationDate < $1.creationDate})
                 }
                 presentationMode.wrappedValue.dismiss()
             }.buttonStyle(GrowingButton())
             
-            Toggle("Sort in Descending Order", isOn : $isDescending)
+            Toggle("Sort in Descending Order", isOn: $isDescending)
             .toggleStyle(CheckToggleStyle())
             .padding()
 
@@ -236,14 +237,14 @@ struct SheetView : View {
     }
 }
 
-struct DateView : View {
-    @Binding var tasks : [TodoTask]
-    @State var date : Date = Date()
+struct DateView: View {
+    @Binding var tasks: [TodoTask]
+    @State var date: Date = Date()
     @State var showAlert = false
     @State var indexSetToDelete: IndexSet?
     
-    func isSameDay(date1 : Date, date2 : Date) -> Bool {
-        let diff = Calendar.current.dateComponents([.day],from : date1, to : date2)
+    func isSameDay(date1: Date, date2: Date) -> Bool {
+        let diff = Calendar.current.dateComponents([.day],from: date1, to: date2)
         if diff.day == 0 {
             return true
         } else {
@@ -253,14 +254,14 @@ struct DateView : View {
     
     func getMatchingTasks() -> [TodoTask] {
         let sameDayTasks = tasks.filter{Calendar.current.isDate($0.dueDate, inSameDayAs: date)}
-        return sameDayTasks.sorted(by : {$0.dueDate < $1.dueDate})
+        return sameDayTasks.sorted(by: {$0.dueDate < $1.dueDate})
     }
     
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(getMatchingTasks(), id : \.uniqueId){item in
+                ForEach(getMatchingTasks(), id: \.uniqueId){item in
                     TaskView(task: item, checkMode: false)
                 }
                 .onDelete { offsets in
@@ -271,7 +272,7 @@ struct DateView : View {
                     Alert(title: Text("Confirm Deletion"),
                         message: Text("Are you sure you want to delete this TODO?"),
                         primaryButton: .destructive(Text("Delete")) {
-                        tasks.remove(atOffsets : self.indexSetToDelete!)
+                        tasks.remove(atOffsets: self.indexSetToDelete!)
                         },
                         secondaryButton: .cancel())
                 }
@@ -281,7 +282,7 @@ struct DateView : View {
                 ToolbarItemGroup(placement: .navigationBarTrailing){
                     DatePicker("",
                                selection: $date,
-                               in : Date()...,
+                               in: Date()...,
                                displayedComponents: [.date])
                 }
             }
@@ -290,15 +291,15 @@ struct DateView : View {
 }
 
 struct ContentView: View {
-    @State var tasks : [TodoTask] = []
+    @State var tasks: [TodoTask] = []
     var body: some View {
         TabView {
-            HomeView(tasks : $tasks)
+            HomeView(tasks: $tasks)
                 .tabItem {
-                    Image(systemName : "house")
+                    Image(systemName: "house")
                     Text("Home")
                 }
-            DateView(tasks : $tasks)
+            DateView(tasks: $tasks)
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Date Filter")

@@ -37,6 +37,7 @@ struct AddView: View {
                     }
                 } label : {
                     Text("Submit")
+                        .fontWeight(.bold)
                 }
             }
     }
