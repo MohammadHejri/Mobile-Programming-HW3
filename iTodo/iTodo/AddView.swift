@@ -20,12 +20,13 @@ struct AddView: View {
     
     var body: some View {
         Form {
-            TextField("Task Name", text: $name)
+            TextField("TODO", text: $name)
             DatePicker("Due Date", selection: $date, in : Date()...)
-        }.alert("The name of your Todo cannot be empty.", isPresented: $isEmptyNameAlertPresented){
-            Button("Cancel", role : .cancel) {}
         }
-        .navigationTitle("Add a Task")
+        .alert("TODO field can not be empty.", isPresented: $isEmptyNameAlertPresented){
+            Button("OK", role : .cancel) {}
+        }
+        .navigationTitle("New TODO")
             .toolbar {
                 Button {
                     if name.isEmpty {

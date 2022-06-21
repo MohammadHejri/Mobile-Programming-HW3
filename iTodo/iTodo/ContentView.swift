@@ -6,13 +6,19 @@ class TodoTask {
     var dueDate : Date
     var creationDate : Date
     var name : String
+    var isDone : Bool
     
     init(dueDate : Date, name : String) {
         self.uniqueId = TodoTask.id
         self.dueDate = dueDate
         self.creationDate = Date()
         self.name = name
+        self.isDone = false
         TodoTask.id += 1
+    }
+    
+    func toggleDoneStatus() {
+        self.isDone.toggle()
     }
 }
 
@@ -25,23 +31,6 @@ struct GrowingButton: ButtonStyle {
             .clipShape(Capsule())
             .scaleEffect(configuration.isPressed ? 1.2 : 1)
             .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
-    }
-}
-
-struct CheckboxStyle: ToggleStyle {
-
-    func makeBody(configuration: Self.Configuration) -> some View {
-
-        return HStack {
-            Image(systemName: configuration.isOn ? "checkmark.square" : "square")
-                .resizable()
-                .frame(width: 24, height: 24)
-                .foregroundColor(configuration.isOn ? .blue : .gray)
-                .font(.system(size: 20, weight: .regular, design: .default))
-                configuration.label
-        }
-        .onTapGesture { configuration.isOn.toggle() }
-
     }
 }
 
@@ -75,10 +64,12 @@ struct TimerView: View {
 
 struct TaskView : View {
     var task: TodoTask
-    @State var checked: Bool = false
+    var checkMode: Bool = true
+    @State var isChecked: Bool = false
     
-    init(task: TodoTask) {
+    init(task: TodoTask, checkMode: Bool) {
         self.task = task
+        self.checkMode = checkMode
     }
     
     func date2string(date: Date) -> String {
@@ -89,16 +80,26 @@ struct TaskView : View {
 
     var body: some View {
         VStack(alignment : .leading) {
-            HStack() {
-                Spacer()
-                TimerView(date: self.task.dueDate)
+            if checkMode {
+                HStack() {
+                    Spacer()
+                    TimerView(date: self.task.dueDate)
+                }
             }
-            Toggle("Hello", isOn : $checked)
-            .toggleStyle(CheckToggleStyle())
-            .padding()
-            Text("Task Name: \(self.task.name)")
-                .font(.headline)
-                .padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+            if checkMode {
+                Toggle("\(self.task.name)", isOn : $isChecked)
+                    .toggleStyle(CheckToggleStyle())
+                    .font(.headline)
+                    .padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+            } else {
+                HStack() {
+                    Image(systemName: "checklist")
+                        .foregroundColor(Color(UIColor.systemBlue))
+                    Text("\(self.task.name)")
+                        .font(.headline)
+                        .padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                }
+            }
             HStack() {
                 Image(systemName: "calendar.badge.clock")
                     .foregroundColor(Color(UIColor.systemBlue))
@@ -118,29 +119,28 @@ struct TaskView : View {
 struct HomeView: View {
     @State var showSheet : Bool = false
     @Binding var tasks : [TodoTask]
+    @State var showAlert = false
+    @State var indexSetToDelete: IndexSet?
     
     var body : some View {
         NavigationView {
-            let empty_view = VStack(alignment: .center) {
-                Image(systemName: "exclamationmark.square")
-                    .resizable()
-                    .frame(width: 75.0, height: 75.0)
-                    .padding()
-                    .foregroundColor(.gray)
-                Text("No TODO to show")
-                    .font(.title)
-                    .foregroundColor(.gray)
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
-            }
-            let list_view = List {
+            List {
                 ForEach(tasks, id : \.uniqueId) {item in
-                    TaskView(task: item)
+                    TaskView(task: item, checkMode: true)
                 }
                 .onDelete { offsets in
-                    tasks.remove(atOffsets : offsets)
+                    self.showAlert = true
+                    self.indexSetToDelete = offsets
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Confirm Deletion"),
+                        message: Text("Are you sure you want to delete this TODO?"),
+                        primaryButton: .destructive(Text("Delete")) {
+                        tasks.remove(atOffsets : self.indexSetToDelete!)
+                        },
+                        secondaryButton: .cancel())
                 }
             }
-            list_view
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing){
@@ -227,7 +227,6 @@ struct DateView : View {
     @Binding var tasks : [TodoTask]
     @State var date : Date = Date()
     
-    
     func isSameDay(date1 : Date, date2 : Date) -> Bool {
         let diff = Calendar.current.dateComponents([.day],from : date1, to : date2)
         if diff.day == 0 {
@@ -244,18 +243,22 @@ struct DateView : View {
     
     
     var body: some View {
-        VStack {
-            DatePicker("Due Date",
-                       selection: $date,
-                       in : Date()...,
-                       displayedComponents: [.date])
-                .padding()
+        NavigationView {
             List {
                 ForEach(getMatchingTasks(), id : \.uniqueId){item in
-                    TaskView(task: item)
+                    TaskView(task: item, checkMode: false)
                 }
                 .onDelete { offsets in
                     tasks.remove(atOffsets : offsets)
+                }
+            }
+            .navigationTitle("Date Filter")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing){
+                    DatePicker("",
+                               selection: $date,
+                               in : Date()...,
+                               displayedComponents: [.date])
                 }
             }
         }
@@ -274,7 +277,7 @@ struct ContentView: View {
             DateView(tasks : $tasks)
                 .tabItem {
                     Image(systemName: "calendar")
-                    Text("Date")
+                    Text("Date Filter")
                 }
         }
     }
