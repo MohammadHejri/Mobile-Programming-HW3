@@ -36,7 +36,7 @@ struct AddView: View {
                     mode.wrappedValue.dismiss()
                     }
                 } label : {
-                    Text("Add")
+                    Text("Submit")
                 }
             }
     }

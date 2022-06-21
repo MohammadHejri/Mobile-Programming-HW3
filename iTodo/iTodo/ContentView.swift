@@ -185,47 +185,62 @@ struct CheckToggleStyle: ToggleStyle {
 struct SheetView : View {
     @Binding var tasks : [TodoTask]
     @State private var isDescending : Bool = false
+    @Environment(\.presentationMode) var presentationMode
     
     var body : some View {
         VStack(alignment : .center, spacing: 10) {
-            Toggle("Sort in Descending Order", isOn : $isDescending)
-            .toggleStyle(CheckToggleStyle())
-            .padding()
-            Button("Sort by name") {
+
+            Button("Sort by Name") {
                 if isDescending {
                     tasks.sort(by : {$0.name > $1.name})
                 }
                 else {
                     tasks.sort(by : {$0.name < $1.name})
                 }
+                presentationMode.wrappedValue.dismiss()
             }.buttonStyle(GrowingButton())
             
-            Button("Sort by creation date") {
-                if isDescending {
-                    tasks.sort(by : {$0.creationDate > $1.creationDate})
-                }
-                else {
-                    tasks.sort(by : {$0.creationDate < $1.creationDate})
-                }
-            }.buttonStyle(GrowingButton())
-            
-            Button("Sort by due date") {
+            Button("Sort by Due Date") {
                 if isDescending {
                     tasks.sort(by : {$0.dueDate > $1.dueDate})
                 }
                 else {
                     tasks.sort(by : {$0.dueDate < $1.dueDate})
                 }
-
+                presentationMode.wrappedValue.dismiss()
             }.buttonStyle(GrowingButton())
+            
+            Button("Sort by Creation Date") {
+                if isDescending {
+                    tasks.sort(by : {$0.creationDate > $1.creationDate})
+                }
+                else {
+                    tasks.sort(by : {$0.creationDate < $1.creationDate})
+                }
+                presentationMode.wrappedValue.dismiss()
+            }.buttonStyle(GrowingButton())
+            
+            Toggle("Sort in Descending Order", isOn : $isDescending)
+            .toggleStyle(CheckToggleStyle())
+            .padding()
+
         }
-        
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing){
+                Button("Sort by Due Date") {
+                    presentationMode.wrappedValue.dismiss()
+    
+                }
+            }
+        }
     }
 }
 
 struct DateView : View {
     @Binding var tasks : [TodoTask]
     @State var date : Date = Date()
+    @State var showAlert = false
+    @State var indexSetToDelete: IndexSet?
     
     func isSameDay(date1 : Date, date2 : Date) -> Bool {
         let diff = Calendar.current.dateComponents([.day],from : date1, to : date2)
@@ -249,7 +264,16 @@ struct DateView : View {
                     TaskView(task: item, checkMode: false)
                 }
                 .onDelete { offsets in
-                    tasks.remove(atOffsets : offsets)
+                    self.showAlert = true
+                    self.indexSetToDelete = offsets
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Confirm Deletion"),
+                        message: Text("Are you sure you want to delete this TODO?"),
+                        primaryButton: .destructive(Text("Delete")) {
+                        tasks.remove(atOffsets : self.indexSetToDelete!)
+                        },
+                        secondaryButton: .cancel())
                 }
             }
             .navigationTitle("Date Filter")
